@@ -1,0 +1,33 @@
+/* main head */
+.upperMainNavBar{
+    display : flex;
+    justify-content: flex-start;
+    align-items : center;
+    padding-top : 5px
+}
+
+.upperMainNavBar .btn{
+    background-color : transform;
+    color : #303952;
+    font-weight : 550;
+    border : none;
+    font-size : 18px;
+    box-shadow : none;
+    margin-left : 15px
+}
+
+.upperMainNavBar .btn:hover{
+    color : #1B9CFC;
+}
+
+@media screen and (max-width : 576px){
+    .upperMainNavBar{
+        margin-left : -30px;
+    }
+}
+
+@media screen and (max-width : 320px){
+    .upperMainNavBar{
+        margin-left : -40px;
+    }
+}

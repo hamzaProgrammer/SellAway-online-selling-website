@@ -1,0 +1,10 @@
+/* header */
+.homeHeader{
+    height : 120px;
+}
+
+@media screen and (max-width : 576px){
+    .homeHeader{
+        height : 180px;
+    }
+}

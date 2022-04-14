@@ -1,0 +1,139 @@
+/* main header */
+.cityPropertiesHead{
+    font-size : 21px;
+    color : #002f34;
+    font-family: Helvetica, sans-serif;
+    font-weight : 550;
+    margin-left : 20px;
+}
+
+/* filters div */
+.cityFilters{
+    display : flex;
+    border-right : 1px solid #dcdde1;
+    flex-direction: column;
+    justify-content: flex-start !important;
+    align-items: center
+}
+
+/* bedroom radio buttons */
+.bedroomRadio{
+    font-size :14px;
+    margin-bottom : 7px;
+    color : #535c68;
+    font-weight : 550;
+}
+
+
+/* first layout */
+
+/* name */
+.firstItemName{
+    font-size : 15px;
+    color :#2d3436;
+    font-weight : 550
+}
+
+/* price */
+.firstItemPrice{
+    font-size : 22px;
+    color : #2d3436;
+    margin-top : 15px;
+    font-weight : 700
+}
+
+/* address */
+.firstItemAddress{
+    font-size : 13px;
+    font-weight : 500;
+    color : #636e72;
+    margin-top : 40px;
+}
+
+
+/* second item  */
+.secItemDiv{
+    display : flex;
+    flex-direction: column;
+    border : 1px solid #b2bec3;
+}
+
+/* menu icon */
+.menuIcon{
+    margin-left : 20px;
+    font-size : 25px;
+    display : none;
+    margin-right : 20px
+}
+
+
+/* sort by button */
+.sortBy{
+    display : flex;
+    justify-content : space-between;
+    align-items : center;
+    width : 180px;
+}
+
+.sortHide{
+    display : none
+}
+
+.secLayOut{
+    margin-left : 40px;
+    margin-top : 30px
+}
+
+.hideIcon{
+    display : block;
+}
+
+.secIconHide{
+    display : block;
+}
+
+.rightFilter{
+    display : flex;
+    justify-content : space-between;
+    align-items : center;
+    margin-left : 30px
+}
+
+@media screen and (max-width: 768px) {
+    .menuIcon{
+        display : block;
+    }
+    .cityFilters{
+        display : none;
+    }
+}
+
+@media screen and (max-width: 576px) {
+    .sortBy{
+        display : none
+    }
+    .sortHide{
+        display : block
+    }
+}
+
+@media screen and (max-width: 425px) {
+    .secLayOut{
+        margin-left : 0px;
+    }
+}
+
+@media screen and (max-width: 375px) {
+    .hideIcon{
+        display : none;
+    }
+}
+
+@media screen and (max-width: 320px) {
+    .secIconHide{
+        display : none;
+    }
+    .rightFilter{
+        margin-left : -25px
+    }
+}
