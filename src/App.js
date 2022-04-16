@@ -12,6 +12,10 @@ import Home from './pages/home/Home'
 import CityProperties from './pages/cityProperties/CityProperties'
 
 
+// Single Property
+import SingleProperty from './pages/singleProperty/SingleProperty'
+
+
 function App() {
     const [isAdmin, setAdminLogin] = useState(false)
     //const location = useNavigate();
@@ -31,7 +35,7 @@ function App() {
   return (
     <>
         <Routes>
-              <Route exact path="/" element={ <CityProperties/> } />
+              <Route exact path="/" element={ <SingleProperty/> } />
 
               {/* <Route exact path="/signup" element={
                   isAdmin ? (

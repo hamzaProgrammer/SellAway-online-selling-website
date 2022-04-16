@@ -1,0 +1,9 @@
+/* map */
+.map{
+    max-height: 100px;
+    padding-left : 10px;
+    padding-right : 10px;
+    border-radius : 10px;
+    padding-top : 10px;
+    min-width: 100%
+}

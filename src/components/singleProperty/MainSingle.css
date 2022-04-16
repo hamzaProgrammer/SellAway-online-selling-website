@@ -1,0 +1,21 @@
+/* hiding features */
+.hideFeatures{
+    display : block;
+}
+
+.showFeatures{
+    display : none
+}
+
+
+@media screen and (max-width: 768px){
+    .showFeatures{
+        display : block;
+        margin-top : 50px;
+        margin-left : -12px
+    }
+    .hideFeatures{
+        display : none;
+    }
+
+}

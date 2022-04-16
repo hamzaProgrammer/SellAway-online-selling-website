@@ -1,0 +1,86 @@
+/* main div */
+.mainRightDiv{
+    display : flex;
+    flex-direction : column;
+    margin-left : 15px;
+    border : 1px solid #b2bec3;
+    border-radius : 5px;
+}
+
+.mainRightDiv .firstDiv{
+    display : flex;
+    justify-content: space-between;
+    align-items : center;
+    border-radius : 5px;
+    padding : 10px;
+    padding-top : 5px;
+    padding-left : 20px;
+    padding-right : 20px
+}
+
+/* price */
+.SingleItemPrice{
+    font-size: 33px;
+    color : #002f34;
+    font-weight : 700
+}
+
+/* icons div */
+.propertyIcons{
+    display : flex;
+    justify-content: space-between;
+    padding-left : 10px;
+    max-width : 150px;
+    width : 150px;
+    min-width : 150px;
+}
+
+/* icon */
+.propertyIcon{
+    width : 22px;
+    height : 22px;
+}
+
+/* icon text */
+.iconHead{
+    font-size : 13px;
+    font-weight : 700;
+    color : #2d3436;
+}
+
+/* head name */
+.singlepropHead{
+    font-size : 14px;
+    font-weight : 500;
+    white-space: wrap;
+    color : #222f3e;
+    width: 92%;
+    max-height : 45px;
+    padding-left : 10px;
+    margin-top : 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* addess div */
+.singlePropAddress{
+    display : flex;
+    justify-content: space-between;
+    align-items : center;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-top: 15px;
+}
+
+/* address */
+.addressName{
+    font-size : 15px;
+    color :#576574;
+    font-weight : 400;
+}
+
+@media screen and (max-width : 1024px){
+    .SingleItemPrice{
+        font-size : 25px;
+    }
+}

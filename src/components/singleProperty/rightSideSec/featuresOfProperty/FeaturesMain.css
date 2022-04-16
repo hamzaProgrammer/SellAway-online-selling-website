@@ -1,0 +1,46 @@
+/* main div */
+.featuresMainDiv{
+    display : flex;
+    flex-direction: column;
+    border : 1px solid #b2bec3;
+    border-radius : 5px;
+    padding : 10px;
+    padding-top : 5px;
+    padding-left : 20px;
+    padding-right : 20px;
+    margin-left : 15px;
+    margin-top : 10px
+}
+
+/* head */
+.featuresHead{
+    font-size : 20px;
+    color : #002f34;
+    text-align : center;
+    font-weight : 700;
+}
+
+/* features head */
+.featureHead{
+    font-size : 15px;
+    font-weight :400;
+    color: #576574;
+    text-align : left
+}
+
+/* head deatils */
+.featureHeadOne{
+    font-size : 17px;
+    font-weight :600;
+    color: #2f3640;
+    text-align : center
+}
+
+@media screen and (max-width : 1024px){
+    .featureHead{
+        font-size : 11px
+    }
+    .featureHeadOne{
+        font-size : 12px
+    }
+}

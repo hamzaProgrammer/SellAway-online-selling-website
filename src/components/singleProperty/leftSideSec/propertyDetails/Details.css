@@ -1,0 +1,25 @@
+/* main div */
+.singlePropDetailMain{
+    padding-left : 15px;
+    padding-right : 15px;
+    padding-top : 5px;
+    padding-bottom :5px;
+    border : 1px solid #b2bec3;
+    border-radius : 5px;
+    margin-top : 40px;
+}
+
+/* description */
+.PropDesc{
+    font-size : 14px;
+    margin-top : 15px;
+    font-weight : 400;
+    color : #576574
+}
+
+/* head */
+.descHead{
+    font-size : 23px;
+    font-weight : 700;
+    margin-top : 10px;
+}

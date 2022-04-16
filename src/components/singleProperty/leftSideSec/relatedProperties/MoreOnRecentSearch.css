@@ -1,0 +1,135 @@
+/* main div */
+.moreRecentRelatedNew{
+    background-color: #FFFFFF;
+    margin-top : 30px;
+    margin-bottom : 10px;
+    padding-bottom : 10px;
+    border-radius : 10px;
+}
+
+.hotProperties{
+    background-color: #FFFFFF;
+    margin-top : 50px;
+    margin-bottom : 10px;
+    padding-bottom : 10px;
+    border-radius : 10px;
+}
+
+.item{
+    margin-left : 10px;
+    margin-bottom : 10px
+}
+
+/* main head */
+.moreRecentRelatedHead{
+    font-size : 22px;
+    font-weight : 600;
+    padding-left : 20px;
+    margin-bottom : 15px;
+    color : #485460;
+    padding-top : 10px;
+}
+
+/* item card */
+.itemCardNew{
+    max-width : 270px;
+    max-height : 320px;
+    border-radius : 5px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+
+/* item description */
+.itemDesc{
+    display : flex;
+    flex-direction: column;
+    margin-top : -12px;
+}
+
+/*  item name */
+.itemName{
+    font-size : 14px;
+    font-weight : 500;
+    color : #1e272e;
+    margin-left : -15px;
+}
+
+/* item price */
+.itemPrice{
+    font-size : 25px;
+    font-weight : 700;
+    text-align: center;
+}
+
+/* item address */
+.itemAddress{
+    font-size : 13px;
+    font-weight : 500;
+    color : #485460;
+    margin-top : 30px;
+    margin-bottom : -20px;
+    margin-left : -15px
+}
+
+
+/* new item */
+.newItem{
+    min-width : 98%;
+}
+
+/* load more button */
+.loadMoreBtn{
+    background-color : #EAB543;
+    color : #FFFFFF;
+    font-size : 18px;
+    font-weight : 600;
+    height : 40px;
+    border : 1px solid #FFFFFF;
+    margin-top : 50px
+}
+
+.loadMoreBtn:hover{
+    background-color : #FFFFFF;
+    color : #EAB543;
+    border : 1px solid #2C3A47;
+}
+
+@media screen and (max-width: 1024px){
+    .newItem{
+        max-width : 230px;
+    }
+}
+
+@media screen and (max-width: 992px){
+    .newItem{
+        max-width : 220px;
+    }
+}
+
+
+@media screen and (max-width: 375px){
+    .itemName{
+        font-size : 12px;
+    }
+    .itemPrice{
+        font-size : 15px;
+    }
+    .itemAddress{
+        font-size : 12px;
+    }
+}
+
+@media screen and (max-width: 320px){
+    .itemName{
+        font-size : 10px;
+    }
+    .itemPrice{
+        font-size : 15px;
+    }
+    .itemAddress{
+        font-size : 10px;
+    }
+    .moreRecentRelatedHead{
+        font-size : 18px
+    }
+}
