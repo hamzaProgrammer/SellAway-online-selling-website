@@ -16,6 +16,37 @@ import CityProperties from './pages/cityProperties/CityProperties'
 import SingleProperty from './pages/singleProperty/SingleProperty'
 
 
+// Add new Property
+import AddNewProperty from './pages/addNewProperty/AddNewProperty'
+
+
+// edit single Property
+import EditProperty from './pages/editProperty/EditSingleProperty'
+
+
+// view single add
+import ViewAdd from './pages/viewProperty/ViewSingleAd'
+
+
+// user profile page
+import MyProfile from './pages/profilePage/MyProfile'
+
+
+// my all properties page
+import AllProperties from './pages/allListedProperties/AllListedProperties'
+
+
+// my all sold properties page
+import AllSoldProperties from './pages/allSoldProperties/AllSoldProperties'
+
+
+// my all saved  properties page
+import AllSavedProperties from './pages/allSavedProperties/AllSavedProperties'
+
+
+// my all saved  search page
+import AllSavedSearches from './pages/savedSearches/SavedSearches'
+
 function App() {
     const [isAdmin, setAdminLogin] = useState(false)
     //const location = useNavigate();
@@ -35,7 +66,7 @@ function App() {
   return (
     <>
         <Routes>
-              <Route exact path="/" element={ <SingleProperty/> } />
+              <Route exact path="/" element={ <AllSavedSearches/> } />
 
               {/* <Route exact path="/signup" element={
                   isAdmin ? (
