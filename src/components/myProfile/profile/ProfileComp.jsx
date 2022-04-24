@@ -116,15 +116,15 @@ const EditPortion = () => {
                         <Alert message={msg} type="success" closable={true} />
                     )
                 }
-                <Typography  className="myLabel" >Edit Email</Typography>
+                <Typography  className="labelNewAddProperty" style={{fontSize : '14px'}} > Email</Typography>
                 <Input value={userSendInfo?.email} name="email" onChange={(e) => setSendInfo({...userSendInfo , [e.target.name] : e.target.value}) } className="myInput" placeholder={userInfo?.email} type="email"  />
-                <Typography className="myLabel" >Edit Password</Typography>
+                <Typography className="labelNewAddProperty" style={{fontSize : '14px'}} > Password</Typography>
                 <Input value={userSendInfo?.password} name="password" onChange={(e) => setSendInfo({...userSendInfo , [e.target.name] : e.target.value}) } className="myInput" placeholder="********" type="text" />
-                <Typography className="myLabel" >Edit Phone No</Typography>
+                <Typography className="labelNewAddProperty" style={{fontSize : '14px'}} > Phone No</Typography>
                 <Input value={userSendInfo?.phoneNo} name="phoneNo" onChange={(e) => setSendInfo({...userSendInfo , [e.target.name] : e.target.value}) } className="myInput" placeholder={userInfo?.phoneNo} type="number" />
-                <Typography className="myLabel" >Edit Location</Typography>
+                <Typography className="labelNewAddProperty" style={{fontSize : '14px'}} > Location</Typography>
                 <Input value={userSendInfo?.address} name="address" onChange={(e) => setSendInfo({...userSendInfo , [e.target.name] : e.target.value}) } className="myInput" placeholder={userInfo?.address} />
-                <Typography className="labelNewAddProperty" style={{marginBottom : '10px'}} >Upload New Profile Image</Typography>
+                <Typography className="labelNewAddProperty" style={{marginBottom : '10px' , fontSize : '14px'}} >Edit Profile Image</Typography>
                 <div className="clearfix">
                     <Upload
                         action="//jsonplaceholder.typicode.com/posts/"

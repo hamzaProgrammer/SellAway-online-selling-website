@@ -66,16 +66,17 @@ function App() {
   return (
     <>
         <Routes>
-              <Route exact path="/" element={ <AllSavedSearches/> } />
+              <Route exact path="/" element={ <Home/> } />
 
-              {/* <Route exact path="/signup" element={
-                  isAdmin ? (
-                    <Home/>
-                  ) : (
-                    <SignUpCust/>
-                  )
-                }
-              /> */}
+              <Route exact path="/singleProperty/:id" element={<SingleProperty/>} />
+
+              <Route exact path="/allProperties" element={<CityProperties/>} />
+
+              <Route exact path="/allSavedProperties/:id" element={<AllSavedProperties/>} />
+
+              <Route exact path="/allSavedSearches/:id" element={<AllSavedSearches/>} />
+
+              <Route exact path="/myProfile/:id" element={<MyProfile/>} />
 
         </Routes>
     </>

@@ -14,7 +14,7 @@ const Home = () => {
   return (
     <>
         <Layout>
-            <Header style={{backgroundColor :'#F7F8F8', position: 'sticky', zIndex: 1, width: '100%' , left : 0, right : 0 , top : 0 }} className="homeHeader" >
+            <Header style={{backgroundColor :'#FFFFFF', position: 'sticky', zIndex: 1,  width: '100%' , left : 0, right : 0 , top : 0 }} className="homeHeader" >
                   <NavbarTop />
                   <MainNavbar />
             </Header>

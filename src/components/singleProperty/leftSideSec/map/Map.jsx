@@ -1,82 +1,91 @@
-import React , {useState} from 'react'
+import React , {useState , useEffect } from 'react'
 import {
     GoogleMap,
     Marker,
     InfoWindow,
 } from '@react-google-maps/api'
-import {Typography} from 'antd';
+import {Typography , Spin} from 'antd';
+import {getPropertyCords} from '../../../../server_api/Api'
+import {useParams} from 'react-router-dom'
 
 
 const Map = () => {
+    const [ propMap , setPropMap ] = useState([]);
+    const [ loading , setloading ] = useState(false);
+    const [ defaultCenter , setDefaultCenter ] = useState({})
+
+    const {id} = useParams();
+    useEffect(() => {
+        const getImages = async () => {
+            setloading(true)
+            const {data} = await getPropertyCords(id);
+            setDefaultCenter({lat: Number(data?.Coordinates[0]) ,lng : Number(data?.Coordinates[1])})
+            setPropMap(data)
+            setloading(false)
+            setSelected(true)
+        }
+        getImages();
+    },[id])
     // google map
     const mapStyles = {
         height: "300px",
         minWidth: "100%",
         marginBottom : "20px"
     };
-    const [ isSpinning , setIsSpinning ] = useState(false)
-    const [ defaultCenter , setDefaultCenter ] = useState({lat: 33.72968039150898,lng : 73.03713213941786})
-    const [ selected, setSelected ] = useState(true);
-    const [ loading , setloading ] = useState(false);
+    const [ selected, setSelected ] = useState(false);
     const onSelect = item => {
         setSelected(true);
     }
 
-    // getting coordinates of current cities
-    // useEffect(() => {
-    //     if(propertyData?.coordinates?.length > 0 ){
-    //         setIsSpinning(true);
-    //         setDefaultCenter({lat: propertyData?.coordinates[0],lng : propertyData?.coordinates[1]})
-    //         setIsSpinning(false);
-    //     }
-    // },[propertyData?.coordinates  ])
 
     return (
         <>
             <div className="map" style={{border : '1px solid #b2bec3', borderRadius : '5px' , marginTop : '15px' , padding : '10px'}} >
                 <Typography style={{fontSize : '22px', paddingBottom : '10px',  fontWeight : 600}} > Location on Google Map</Typography>
-                {/* {
-                    propertyData !== {} ? (
-                        propertyData?.coordinates && (
-                            propertyData?.coordinates.length > 0  && ( */}
-                                <GoogleMap
-                                    mapContainerStyle={mapStyles}
-                                    zoom={13}
-                                    center={defaultCenter}
-                                    scrollwheel = {false}
-                                    streetViewControl = {false}
-                                    mapTypeControl = {false}
-                                >
-                                    {
+                <Spin spinning={loading} >
+                    {
+                        propMap ? (
+                            <GoogleMap
+                                mapContainerStyle={mapStyles}
+                                zoom={13}
+                                center={defaultCenter}
+                                scrollwheel = {false}
+                                streetViewControl = {false}
+                                mapTypeControl = {false}
+                            >
+                                {
 
-                                        <Marker key={"hamza"}
-                                            position={defaultCenter}
-                                            onClick={() => onSelect(true)}
-                                        >
-                                            {
-                                                selected && (
-                                                    <InfoWindow
-                                                        position={defaultCenter}
-                                                        clickable={true}
-                                                        onCloseClick={() => setSelected(false)}
-                                                    >
-                                                        <div style={{display : 'flex' , justifyContent : 'center' , alignItems : 'center' , flexDirection : 'column' , width : '150px'}} >
-                                                            <img alt="property cover" width="100%" height="70" src="https://lh5.googleusercontent.com/p/AF1QipM-2PszVWE7sLT5mQXfypvwSvtBOdiRrBT9eAV7=w408-h265-k-no" style={{objectFit : 'cover' , }} />
-                                                            <Typography style={{fontSize: '15px' , fontWeight : 600  }} >hamza Property</Typography>
-                                                            <Typography style={{fontSize: '12px' , paddingTop : '10px'  }} >Rwp</Typography>
-                                                        </div>
-                                                    </InfoWindow>
-                                                )
-                                            }
-                                        </Marker>
-                                    }
-                                </GoogleMap>
-                            {/* )
+                                    <Marker key={propMap?.Title}
+                                        position={defaultCenter}
+                                        onClick={() => onSelect(true)}
+                                    >
+                                        {
+                                            selected && (
+                                                <InfoWindow
+                                                    position={defaultCenter}
+                                                    clickable={true}
+                                                    onCloseClick={() => setSelected(false)}
+                                                >
+                                                    <div style={{display : 'flex' , justifyContent : 'center' , alignItems : 'center' , flexDirection : 'column' , width : '150px'}} >
+                                                        {
+                                                            propMap?.Image && (
+                                                                <img alt="property cover" width="100%" height="70" src={propMap?.Image[0]}  style={{objectFit : 'cover' , }} />
+                                                            )
+                                                        }
+                                                        <Typography style={{fontSize: '15px' , fontWeight : 600  }} >{propMap?.Title}</Typography>
+                                                        <Typography style={{fontSize: '12px' , paddingTop : '10px'  }} >{propMap?.Address}</Typography>
+                                                    </div>
+                                                </InfoWindow>
+                                            )
+                                        }
+                                    </Marker>
+                                }
+                            </GoogleMap>
+                        ) : (
+                            <Typography style={{fontSize : '20px', textAlign : 'center' , colro : '#c0392b'}} >Could Not get Address of Property on Map</Typography>
                         )
-                    ) : (
-                        <Typography style={{fontSize : '22px' , marginTop : '15px' , fontWeight : 700, textAlign : 'center'}} >Could Not Found Location of Property</Typography>
-                    )
-                } */}
+                    }
+                </Spin>
             </div>
         </>
     )
