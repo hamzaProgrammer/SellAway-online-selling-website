@@ -4,7 +4,6 @@ import Sidebar from '../sidebar/Sidebar'
 import SavedComp from './SavedComp'
 
 
-
 const MyProfile = () => {
     return (
         <>

@@ -1,8 +1,7 @@
-import React from 'react'
+import React , {useState , useEffect} from 'react'
 import {Row , Col } from 'antd';
 import Sidebar from '../sidebar/Sidebar'
 import SoldComp from './SoldComp'
-
 
 
 const MyProfile = () => {

@@ -13,7 +13,7 @@ const MyProfile = () => {
   return (
     <>
         <Layout>
-            <Header style={{backgroundColor :'#F7F8F8', position: 'sticky', zIndex: 1, width: '100%' , left : 0, right : 0 , top : 0 }}  >
+            <Header style={{backgroundColor :'#FFFFFF', position: 'sticky', zIndex: 1, width: '100%' , left : 0, right : 0 , top : 0 }}  >
                     <NavbarTop />
             </Header>
                 <Content style={{backgroundColor : '#FFFFFF' , padding : '20px'}} >

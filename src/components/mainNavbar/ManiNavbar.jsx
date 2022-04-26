@@ -1,6 +1,6 @@
 import React , {useState , useEffect} from 'react'
 import { Row, Col , Select , Menu, Dropdown , Avatar , Button , Drawer , notification  } from 'antd';
-import { NotificationOutlined  ,LogoutOutlined ,MenuUnfoldOutlined , MessageOutlined , CloudUploadOutlined  } from '@ant-design/icons';
+import { NotificationOutlined  ,LogoutOutlined ,MenuUnfoldOutlined , MessageOutlined   } from '@ant-design/icons';
 import './MainNavbar.css'
 import {useNavigate} from 'react-router-dom'
 
@@ -51,6 +51,11 @@ const ManiNavbar = () => {
         if(searchType === "" || searchCity === ""){
             searchNotification();
         }else{
+            const isCity = JSON.parse(localStorage.getItem('searchedCity'))
+            if(isCity){
+                localStorage.removeItem("searchedCity");
+            }
+            localStorage.setItem("searchedCity", JSON.stringify(searchCity));
             navigate(`/allProperties?city=${searchCity}&activeStatus=${searchType}`)
         }
 
@@ -85,6 +90,20 @@ const ManiNavbar = () => {
             location(`/myProfile/${user?.User?._id}`);
         }
     }
+
+    const advertise = () => {
+        if(isUser){
+            location(`/advertiseMyAdd/${user?.User?._id}`);
+        }else{
+            openNotificationWithIcon('error')
+        }
+    }
+
+    const openNotificationWithIcon = type => {
+        notification[type]({
+            message: 'Please Sign in First',
+        });
+    };
 
     return (
         <>
@@ -151,7 +170,7 @@ const ManiNavbar = () => {
                                 )
                         )
                         }
-                        <Button  style={{fontSize : '17px' , marginTop  : '-5px' , height : '40px', minHeight : 'auto' , minWidth : 'auto' ,  borderRadius : '20px', backgroundColor : '#ff6b81' , color : '#FFFFFF'  , fontWeight : 600 , boxShadow: 'rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px' , border: '1px solid transparent'}} >Advertise</Button>
+                        <Button  style={{fontSize : '17px' , marginTop  : '-5px' , height : '40px', minHeight : 'auto' , minWidth : 'auto' ,  borderRadius : '20px', backgroundColor : '#ff6b81' , color : '#FFFFFF'  , fontWeight : 600 , boxShadow: 'rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px' , border: '1px solid transparent'}} onClick={advertise} >Advertise</Button>
                     </div>
                     <MenuUnfoldOutlined className="drawerIcon" onClick={showDrawer} />
                 </Col>

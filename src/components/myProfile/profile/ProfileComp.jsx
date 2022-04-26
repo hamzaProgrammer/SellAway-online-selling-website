@@ -1,6 +1,6 @@
 import React , {useState , useEffect} from 'react'
 import {Typography ,Input , Button , notification , Alert , Upload , Modal} from 'antd';
-//import {getUserInfo , updateUserInfo , uploadUserProfilePic} from '../../../server_api/Api'
+import {getUserInfo ,updateProfilePic , updateUserInfo} from '../../../server_api/Api'
 import {useParams} from 'react-router-dom'
 import '../sidebar/SideBar.css'
 
@@ -19,11 +19,11 @@ const EditPortion = () => {
     const [isSuccess, setIsSuccess ] = useState(false)
     const [msg, setMsg ] = useState(false)
     useEffect(() => {
-        // const getData = async () => {
-        //     const {data} = await getUserInfo(id);
-        //     setuserInfo(data?.User)
-        // }
-        // getData();
+        const getData = async () => {
+            const {data} = await getUserInfo(id);
+            setuserInfo(data?.User)
+        }
+        getData();
     } , [id,isSuccess ])
 
     // notification for added sucessfull
@@ -32,6 +32,22 @@ const EditPortion = () => {
             message: 'SuccessFull',
             description:'User Profile Updated SuccessFully',
             duration : 3000
+        });
+    };
+
+    const openNotificationWithImage = (type) => {
+        notification[type]({
+            message: 'SuccessFull',
+            description:'User Profile Image Updates SuccessFully',
+            duration : 2000
+        });
+    };
+
+    const openNotificationWithImageNot = (type) => {
+        notification[type]({
+            message: 'UnSuccessFull',
+            description:'User Profile Image Could Not be Updated',
+            duration : 2000
         });
     };
 
@@ -54,16 +70,16 @@ const EditPortion = () => {
             setSendInfo({...userSendInfo , password : userInfo?.password})
         }
 
-        // const {data} = await updateUserInfo(userSendInfo , userInfo._id);
-        // console.log("got data : ", data)
+        const {data} = await updateUserInfo(userInfo._id, userSendInfo );
+        console.log("got data : ", data)
 
-        // if(data?.success === true){
-        //     setIsSuccess(true)
-        //     openNotificationWithIcon('success');
-        // }else{
-        //     setIsError(true)
-        //     setMsg(data?.message)
-        // }
+        if(data?.success === true){
+            setIsSuccess(true)
+            openNotificationWithIcon('success');
+        }else{
+            setIsError(true)
+            setMsg(data?.message)
+        }
     }
     const [previewVisible , setpreviewVisible] = useState(false)
     const [previewImage , setpreviewImage] = useState('')
@@ -83,16 +99,14 @@ const EditPortion = () => {
             let formData = new FormData()
             const myImg = fileList[0].originFileObj;
             formData.append("profilePic" , myImg )
-            // const {data} = await uploadUserProfilePic( formData, userInfo._id);
-            // console.log("got data : ", data)
+            const {data} = await updateProfilePic( formData, userInfo._id);
+            console.log("got data : ", data)
     
-            // if(data?.success === true){
-            //     setIsSuccess(true)
-            //     setMsg(data?.message)
-            // }else{
-            //     setIsError(true)
-            //     setMsg(data?.message)
-            // }
+            if(data?.success === true){
+                openNotificationWithImage('success');
+            }else{
+                openNotificationWithImageNot('error')
+            }
         }
 
     }

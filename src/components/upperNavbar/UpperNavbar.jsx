@@ -144,10 +144,14 @@ const UpperNavbar = () => {
         }
     }
 
+    const homePage = () => {
+        location(`/`);
+    }
+
     return (
         <>
             <div className="upperMainNavBar" >
-                <img alt="logo" style={{width : '40px' , height : '40px'}} src="/logo.jpg" />
+                <img alt="logo" style={{width : '40px' , height : '40px' , cursor : 'pointer'}} src="/logo.jpg" onClick={homePage} />
                 <div className="mainUpperDiv">
                     <Button className="btn" ghost size="medium"  onClick={savedProp} >
                         Saved Properties

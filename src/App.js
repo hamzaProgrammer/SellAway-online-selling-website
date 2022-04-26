@@ -1,7 +1,7 @@
 import './App.css';
 import 'antd/dist/antd.css';
 import {useEffect , useState } from 'react'
-import { Routes , Route  } from 'react-router-dom'
+import { Routes , Route , useNavigate } from 'react-router-dom'
 
 
 // Home Page
@@ -49,20 +49,20 @@ import AllSavedSearches from './pages/savedSearches/SavedSearches'
 
 function App() {
     const [isAdmin, setAdminLogin] = useState(false)
-    //const location = useNavigate();
+    const location = useNavigate();
 
     //checking if admin logged in or not
-    // useEffect(() => {
-    //   const checkAdmin = () => {
-    //     const user = JSON.parse(localStorage.getItem('profile'))
-    //     if (user) {
-    //       setAdminLogin(true)
-    //     } else {
-    //       setAdminLogin(false)
-    //     }
-    //   }
-    //   checkAdmin();
-    // }, [location])
+    useEffect(() => {
+      const checkAdmin = () => {
+        const user = JSON.parse(localStorage.getItem('profile'))
+        if (user) {
+          setAdminLogin(true)
+        } else {
+          setAdminLogin(false)
+        }
+      }
+      checkAdmin();
+    }, [location])
   return (
     <>
         <Routes>
@@ -77,6 +77,14 @@ function App() {
               <Route exact path="/allSavedSearches/:id" element={<AllSavedSearches/>} />
 
               <Route exact path="/myProfile/:id" element={<MyProfile/>} />
+
+              <Route exact path="/allListedProperties/:id" element={<AllProperties/>} />
+
+              <Route exact path="/allSoldProperties/:id" element={<AllSoldProperties/>} />
+
+              <Route exact path="/advertiseMyAdd/:id" element={<AddNewProperty/>} />
+
+              <Route exact path="/editMyAdvertise/:id" element={<ViewAdd/>} />
 
         </Routes>
     </>

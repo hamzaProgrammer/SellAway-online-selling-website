@@ -38,6 +38,10 @@
     margin-top : 10px;
 }
 
+.clear{
+    display : flex;
+}
+
 .newAddPropertyInput:hover{
     border: 3px solid #e74c3c;
 }
@@ -122,6 +126,7 @@
     .toggleText{
         font-size : 15px;
     }
+    
 }
 
 @media screen and (max-width : 576px){
@@ -134,5 +139,8 @@
     }
     .showToggle{
         display : none;
+    }
+    .clear{
+        flex-direction : column
     }
 }

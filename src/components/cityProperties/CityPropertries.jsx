@@ -1,9 +1,9 @@
 import React , {useState , useEffect } from 'react'
-import { Typography , Row , Col , Divider , Radio , Input  ,  Tag , Button,  Select , Drawer , Collapse , Spin } from 'antd';
+import { Typography , Row , Col , Divider , Radio , Input  ,  Tag , Button,  Select , message ,  Drawer , Collapse , Spin } from 'antd';
 import './CityProperty.css'
 import {DollarCircleOutlined , MenuOutlined } from '@ant-design/icons'
-import {getFilteredProperties} from '../../server_api/Api'
-import {useLocation} from 'react-router-dom'
+import {getFilteredProperties , saveOrUnsaveProperties , saveMySearch} from '../../server_api/Api'
+import {useLocation, useNavigate} from 'react-router-dom'
 import axios from 'axios'
 
 
@@ -29,15 +29,39 @@ const CityPropertries = () => {
     const [minPrice, setminPrice ] = useState(0)
     const [maxPrice, setmaxPrice ] = useState(0)
     const [ sortBy, setsortBy ] = useState('')
+    const [ newUrl , setNewUrl ] = useState("");
+    const [ msg , setMsg ] = useState("")
+    const [ isSaved , setIsSaved] = useState(false)
 
     const search = useLocation().search;
     const city = new URLSearchParams(search).get('city');
     const activeStatus = new URLSearchParams(search).get('activeStatus');
 
+    const [isAdmin, setAdminLogin] = useState(false)
+    const [isUser, setIsUser ] = useState("")
+    const location = useNavigate();
+
+    //checking if admin logged in or not
+    useEffect(() => {
+        const checkAdmin = () => {
+            const user = JSON.parse(localStorage.getItem('profile'))
+            if (user) {
+                setAdminLogin(true);
+                setIsUser(user?.User?._id)
+            } else {
+                setAdminLogin(false)
+            }
+            setIsSaved(false);
+        }
+        checkAdmin();
+    }, [location])
+
     useEffect(() => {
         const getData = async () => {
             setLoading(true)
-            const {data} = await getFilteredProperties(city,activeStatus);
+            setIsSaved(false);
+            const {data} = await getFilteredProperties(search);
+            setNewUrl("http://localhost:3000/allProperties" + `${search}`)
             setAllProperties(data?.AllProperties);
             setLoading(false)
         }
@@ -46,6 +70,7 @@ const CityPropertries = () => {
 
     // gettting results on applying filter
     useEffect(() => {
+        setIsSaved(false);
         let filters = {};
         if(sortBy !== ""){
             console.log(" inner : ", sortBy)
@@ -73,12 +98,14 @@ const CityPropertries = () => {
             filters = {...filters , maxPrice : maxPrice }
         }
 
+        let sendUrl = `http://localhost:3000/allProperties?city=${city}&activeStatus=${activeStatus}&`
         let url = `http://localhost:8080/api/properties/getFilteredProperties?city=${city}&activeStatus=${activeStatus}&`;
         for (const [key, value] of Object.entries(filters)) {
             url = url + `${key}=${value}&`;
+            sendUrl = sendUrl + `${key}=${value}&`
         }
+        setNewUrl(sendUrl)
 
-        console.log("url" , url)
         axios.get(url)
         .then(function (response) {
             // handle success
@@ -122,6 +149,59 @@ const CityPropertries = () => {
 
     // changing layout by state
     const [ layOutDir , seLayOutDir ] = useState("one")
+
+
+    const success = () => {
+        message.success(msg);
+    };
+
+    const error = () => {
+        message.error(msg);
+    };
+
+    const errorSignIn = () => {
+        message.error("Please Sign In First");
+    };
+
+    const errorSignInSaved = () => {
+        message.error("Sorry, Could Not Save Search");
+    };
+
+    const successSaved = () => {
+        message.success("Search Saved SuccessFully");
+    };
+
+    const SaveOrUnSave = async (userId , propId) => {
+        const {data} = await saveOrUnsaveProperties(userId , propId)
+        console.log("saved : ", data);
+        if(data?.success === true){
+            setMsg(data?.message);
+            success();
+        }else{
+            setMsg(data?.message);
+            error();
+        }
+
+    }
+
+    const saveSearch = async () => {
+        if(isAdmin === false){
+            errorSignIn();
+        }else{
+            let obj = {
+                savedSearch : newUrl
+            }
+            const {data} = await saveMySearch(isUser,obj);
+            if(data?.success === true){
+                setIsSaved(true)
+                successSaved();
+            }else{
+                errorSignInSaved();
+                setIsSaved(false)
+            }
+        }
+    }
+
     return (
         <>
             <Row>
@@ -184,6 +264,7 @@ const CityPropertries = () => {
                             <div className="rightFilter" >
                                 <MenuOutlined onClick={showDrawer} className="menuIcon" style={{fontSize : '25px'}}  />
                                 <Tag color="#34ace0" style={{fontSize : '15px' , fontWeight : 600}} >{allProperties.length} ads</Tag>
+                                <Button  style={{backgroundColor : '#cf6a87' , color : '#FFFFFF', border: 'none' , borderRadius : '10px',  fontWeight : 600}} onClick={saveSearch} disabled={isSaved} >Save Search</Button>
                                 <div style={{display : 'flex' , justifyContent : 'space-between', width : '350px'}} >
                                     <div style={{display : 'flex', justifyContent : 'space-between' , alignItems : 'center' , width : '150px'}} >
                                     <Typography style={{fontSize : '17px' , fontWeight : 600 , color : '#2f3640'}} >VIEW: </Typography>
@@ -226,7 +307,7 @@ const CityPropertries = () => {
                                                                             </div>
                                                                         </Col>
                                                                         <Col xs={2} sm={2} md={2} lg={2} xl={2}>
-                                                                            <img alt="save property icon" style={{maxWidth : '30px', maxHeight : '30px'}} src="https://img.icons8.com/material-outlined/24/000000/filled-like.png"/>
+                                                                            <img style={{ maxWidth : '30px' , maxHeight : '30px' , marginLeft : '10px' , cursor : 'pointer' }} alt="Save icon" onClick={() => SaveOrUnSave(item?.owner,item?._id )} src="https://img.icons8.com/external-bearicons-detailed-outline-bearicons/64/000000/external-Save-social-media-bearicons-detailed-outline-bearicons.png"/>
                                                                         </Col>
                                                                     </Row>
                                                                 </Col>
@@ -256,7 +337,7 @@ const CityPropertries = () => {
                                                                                     </div>
                                                                                 </Col>
                                                                                 <Col xs={3} sm={3} md={3} lg={3} xl={3}>
-                                                                                    <img alt="save property icon" style={{maxWidth : '28px', maxHeight : '28px' , marginRight : '10px' }} src="https://img.icons8.com/material-outlined/24/000000/filled-like.png"/>
+                                                                                    <img style={{ maxWidth : '20px' , maxHeight : '20px' , marginLeft : '10px' , cursor : 'pointer' }} alt="Save icon" onClick={() => SaveOrUnSave(item?.owner,item?._id )} src="https://img.icons8.com/external-bearicons-detailed-outline-bearicons/64/000000/external-Save-social-media-bearicons-detailed-outline-bearicons.png"/>
                                                                                 </Col>
                                                                         </Row>
                                                                     </div>
@@ -287,7 +368,7 @@ const CityPropertries = () => {
                                                                                     </div>
                                                                                 </Col>
                                                                                 <Col xs={2} sm={2} md={2} lg={2} xl={2}>
-                                                                                    <img alt="save property icon" style={{maxWidth : '28px', maxHeight : '28px' , marginRight : '10px' }} src="https://img.icons8.com/material-outlined/24/000000/filled-like.png"/>
+                                                                                    <img style={{ maxWidth : '30px' , maxHeight : '30px' , marginLeft : '10px' , cursor : 'pointer' }} alt="Save icon" onClick={() => SaveOrUnSave(item?.owner,item?._id )} src="https://img.icons8.com/external-bearicons-detailed-outline-bearicons/64/000000/external-Save-social-media-bearicons-detailed-outline-bearicons.png"/>
                                                                                 </Col>
                                                                         </Row>
                                                                     </div>
