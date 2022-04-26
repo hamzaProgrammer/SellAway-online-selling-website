@@ -21,15 +21,14 @@ app.use(cors())
 
 app.use(express.json())
 
+
 app.use('/propertiesImages', express.static('propertiesImages'));
 app.use('/userImages', express.static('userImages'));
-
 
 
 // adding routes
 app.use(require('./routes/UsersRoutes'))
 app.use(require('./routes/PropertiesRoutes'))
-
 
 
 

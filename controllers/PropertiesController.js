@@ -14,7 +14,7 @@ const mongoose = require("mongoose")
 
 // add new property
 const addNewProperty = async (req, res) => {
-    const {title , address , price , desc , city , extraFeatures, bedrooms , baths , kitchen , rooms , tvLaunch , balcony , furnished , area , status , owner } = req.body;
+    const {title , address , price , desc , city , features, bedrooms , baths , kitchen , rooms , tvLaunch , balcony , furnished , area , status , owner } = req.body;
 
     if (!title || !address || !price || !desc || !city || !bedrooms  || !baths || !kitchen || !rooms  || !tvLaunch  || !balcony || !furnished || !area || !status || !owner) {
         return res.json({
@@ -52,6 +52,24 @@ const addNewProperty = async (req, res) => {
         req.body.coordinates = [result[0].latitude , result[0].longitude]
         req.body.city = city.toLowerCase();
 
+        if(tvLaunch === "No"){
+            req.body.tvLaunch = false;
+        }else if(tvLaunch === "Yes"){
+            req.body.tvLaunch = true;
+        }
+
+        if(furnished === "No"){
+            req.body.furnished = false;
+        }else if(furnished === "Yes"){
+            req.body.furnished = true;
+        }
+
+        if(balcony === "No"){
+            req.body.balcony = false;
+        }else if(balcony === "Yes"){
+            req.body.balcony = true;
+        }
+
         const newProperty = new Properties({
             ...req.body,
         })
@@ -65,7 +83,7 @@ const addNewProperty = async (req, res) => {
             return res.status(201).json({
                 PropertyId : newProp._id,
                 success: true,
-                message: 'New Property Ad Listed SuccessFully'
+                message: 'Details of New Property Ad Listed SuccessFully'
             })
         } catch (error) {
             console.log("Error in addNewProperty and error is : ", error)
@@ -80,11 +98,20 @@ const addNewProperty = async (req, res) => {
 // check Images type
 const uploadPropertyImages = async (req,res) => {
     const {id} = req.params;
+    console.log("req.files : ", req.files , req.file)
+    console.log("reid : ", id)
 
     if(!req.files){
         return res.json({
             success: false,
             message: "Please Provide Images of Property Also"
+        });
+    }
+
+    if(req.files.length < 1){
+        return res.json({
+            success: false,
+            message: "No Images Found"
         });
     }
 
@@ -96,6 +123,7 @@ const uploadPropertyImages = async (req,res) => {
             });
         }
     }
+
 
     // pushing images
     let isExist = await Properties.findById(id)
@@ -128,10 +156,130 @@ const uploadPropertyImages = async (req,res) => {
 
 }
 
+// check Images type
+const updateSingleImageProperty = async (req,res) => {
+    const {id , index} = req.params;
+    console.log("reid : ", id)
+    console.log("req.file : ", req.file)
+
+    if ((req.file.mimetype  !== "image/jpeg" && req.file.mimetype  !== "image/jpg" && req.file.mimetype  !== "image/webP" && req.file.mimetype  !== "image/png")) {
+        return res.json({
+            success: false,
+            message: "Images Should be of Image Type Only"
+        });
+    }
+
+
+    // pushing images
+    let isExist = await Properties.findById(id)
+    if (!isExist) {
+        return res.json({
+            success: false,
+            message: "Property Does Not Exists"
+        });
+    }
+
+        let lower = URL + "/propertiesImages/" +  req.file.filename.toLowerCase();
+        isExist.images[index] = lower
+
+    try {
+        await Properties.findByIdAndUpdate(id, {$set : {...isExist}} , {new : true})
+        return res.json({
+            success: true,
+            message: 'Property Image Uploaded SuccessFully'
+        });
+    } catch (error) {
+        console.log("Error in updateSingleImageProperty and error is : ", error)
+        return res.json({
+            success: false,
+            message: 'Could Not Upload Images of Property'
+        });
+    }
+
+}
+
+// adding new image to property
+const addNewImageProperty = async (req,res) => {
+    const {id , owner} = req.params;
+    console.log("req.file : ", req.file)
+
+    if ((req.file.mimetype  !== "image/jpeg" && req.file.mimetype  !== "image/jpg" && req.file.mimetype  !== "image/webP" && req.file.mimetype  !== "image/png")) {
+        return res.json({
+            success: false,
+            message: "Images Should be of Image Type Only"
+        });
+    }
+
+
+    // pushing images
+    let isExist = await Properties.findById(id)
+    if (!isExist) {
+        return res.json({
+            success: false,
+            message: "Property Does Not Exists"
+        });
+    }
+
+        let lower = URL + "/propertiesImages/" +  req.file.filename.toLowerCase();
+        isExist.images.push(lower)
+
+    try {
+        await Properties.findByIdAndUpdate(id, {$set : {...isExist}} , {new : true})
+        return res.json({
+            success: true,
+            message: 'Property Image Uploaded SuccessFully'
+        });
+    } catch (error) {
+        console.log("Error in addNewImageProperty and error is : ", error)
+        return res.json({
+            success: false,
+            message: 'Could Not Upload Images of Property'
+        });
+    }
+
+}
+
+// check Images type
+const deleteSingleImageProperty = async (req,res) => {
+    const {id , index} = req.params;
+
+    // pushing images
+    let isExist = await Properties.findById(id)
+    if (!isExist) {
+        return res.json({
+            success: false,
+            message: "Property Does Not Exists"
+        });
+    }
+
+        let newImagesArray = []
+        for(let i = 0; i !== isExist.images.length;  i++){
+            if(i != index){
+                newImagesArray.push(isExist.images[i])
+            }
+        }
+
+        isExist.images = newImagesArray;
+    try {
+        await Properties.findByIdAndUpdate(id, {$set : {...isExist}} , {new : true})
+        return res.json({
+            success: true,
+            message: 'Property Image Uploaded SuccessFully'
+        });
+    } catch (error) {
+        console.log("Error in deleteSingleImageProperty and error is : ", error)
+        return res.json({
+            success: false,
+            message: 'Could Not Upload Images of Property'
+        });
+    }
+
+}
+
 // update info of property
 const updatePropertyInfo = async (req, res) => {
     const {id , owner} = req.params;
-
+    console.log("body : ",req.body)
     if (Object.keys(req.body).length === 0) {
         return res.json({
             success: false,
@@ -161,84 +309,8 @@ const updatePropertyInfo = async (req, res) => {
             });
         }
 
-        if(req.body.title){
-            isExist.title = req.body.title
-        }
-        if(req.body.address){
-            isExist.address = req.body.address
-            const result = await geocoder.geocode(req.body.address);
-            isExist.coordinates = [result[0].latitude , result[0].longitude]
-        }
-        if(req.body.city){
-            isExist.city = req.body.city
-        }
-        if(req.body.address){
-            isExist.address = req.body.address
-        }
-        if(req.body.price){
-            isExist.price = req.body.price
-        }
-        if(req.body.desc){
-            isExist.desc = req.body.desc
-        }
-        if(req.body.price){
-            isExist.price = req.body.price
-        }
-        if(req.body.extraFeatures){
-            isExist.extraFeatures = req.body.extraFeatures
-        }
-        if(req.body.bedrooms){
-            isExist.bedrooms = req.body.bedrooms
-        }
-        if(req.body.baths){
-            isExist.baths = req.body.baths
-        }
-        if(req.body.kitchen){
-            isExist.kitchen = req.body.kitchen
-        }
-        if(req.body.baths){
-            isExist.baths = req.body.baths
-        }
-        if(req.body.rooms){
-            isExist.rooms = req.body.rooms
-        }
-        if(req.body.tvLaunch){
-            isExist.tvLaunch = req.body.tvLaunch
-        }
-        if(req.body.balcony){
-            isExist.balcony = req.body.balcony
-        }
-        if(req.body.furnished){
-            isExist.furnished = req.body.furnished
-        }
-        if(req.body.area){
-            isExist.area = req.body.area
-        }
-        if(req.body.status){
-            isExist.status = req.body.status;
-            if(req.body.status === "sold"){
-                const isSold = await Users.findOne({_id : owner , soldProperties : {$elemMatch : {$eq : id}} })
-                if(!isSold){
-                    await Users.findByIdAndUpdate(owner , {$pull : {listedProperties : id } , $push : {soldProperties : id }} , {new : true})
-                }
-            }
-            if(req.body.status === "rent"){
-                const isSold = await Users.findOne({_id : owner , soldProperties : {$elemMatch : {$eq : id}} })
-                if(isSold){
-                    await Users.findByIdAndUpdate(owner , {$pull : { soldProperties : id } , $push : {listedProperties : id }} , {new : true})
-                }
-            }
-            if(req.body.status === "sell"){
-                const isSold = await Users.findOne({_id : owner , soldProperties : {$elemMatch : {$eq : id}} })
-                if(isSold){
-                    await Users.findByIdAndUpdate(owner , {$pull : { soldProperties : id } , $push : {listedProperties : id }} , {new : true})
-                }
-            }
-        }
-
-
         try {
-            await Properties.findByIdAndUpdate(id, {$set : {...isExist}} , {new : true})
+            await Properties.findByIdAndUpdate(id, {$set : {...req.body}} , {new : true})
 
             return res.status(201).json({
                 success: true,
@@ -276,6 +348,39 @@ const getSinglePropertyImages = async (req, res) => {
             return res.status(201).json({
                 success: true,
                 PropertyImages : isExist.images,
+            })
+        } catch (error) {
+            console.log("Error in getSinglePropertyImages and error is : ", error)
+            res.status(504).json({
+                success: false,
+                message : "Sorry Could Not get Images"
+            })
+        }
+    }
+}
+
+// get single property data
+const getSinglePropertyData = async (req, res) => {
+    const {id} = req.params;
+
+    if (!id) {
+        return res.json({
+            success: false,
+            message: "Id is Required for getting Images of Property"
+        });
+    } else {
+        try {
+            const isExist = await Properties.findById(id)
+            if(!isExist) {
+                return res.json({
+                    success: false,
+                    message : "Property Not Found or Does Not Exist."
+                });
+            }
+
+            return res.status(201).json({
+                success: true,
+                SingleProperty : isExist,
             })
         } catch (error) {
             console.log("Error in getSinglePropertyImages and error is : ", error)
@@ -547,7 +652,7 @@ const getSinglePropertyOwner = async (req, res) => {
 // get all recent properties
 const getRecentProperties = async (req, res) => {
     try {
-        const isExist = await Properties.find({} , {_id : 1 , images : 1 , city : 1 ,  title : 1 , address : 1 , createdAt : 1 , price : 1 }).sort({createdAt : -1}).limit(12);
+        const isExist = await Properties.find({} , {_id : 1 , images : 1 , city : 1 , owner : 1,  title : 1 , address : 1 , createdAt : 1 , price : 1 }).sort({createdAt : -1}).limit(12);
 
         return res.status(201).json({
             success: true,
@@ -572,7 +677,7 @@ const getCityProperties = async (req, res) => {
         })
     }
     try {
-        const isExist = await Properties.find({city : city} , {_id : 1 , images : 1 , title : 1 , address : 1 , price : 1 }).sort({createdAt : -1}).limit(12);
+        const isExist = await Properties.find({city : city} , {_id : 1 , images : 1 , owner : 1  , title : 1 , address : 1 , price : 1 , createdAt : 1 }).sort({createdAt : -1}).limit(12);
 
         return res.status(201).json({
             success: true,
@@ -590,6 +695,7 @@ const getCityProperties = async (req, res) => {
 // get all saved properties of a user
 const getAllSavedPropertiesOfUser = async (req, res) => {
     const {id} = req.params;
+
     if(!id){
         return res.status(201).json({
             success: false,
@@ -686,8 +792,8 @@ const saveUnSavePropertiesOfUser = async (req, res) => {
             })
         }
 
-        await Users.findByIdAndUpdate(userId , {$push : {savedProperties : propId }}, {new : true});
-
+        let nn = await Users.findByIdAndUpdate(userId , {$push : {savedProperties : propId }}, {new : true});
+        console.log("nn : ", nn)
         return res.status(201).json({
             success: true,
             message : "Property Saved For Later"
@@ -706,7 +812,7 @@ const saveUnSaveSearchOfUser = async (req, res) => {
     const {userId} = req.params;
     const {savedSearch} = req.body;
 
-    if(!userId || !savedSearch){
+    if(!userId || !req.body){
         return res.status(404).json({
             success: false,
             message : "Please Provide All Fields"
@@ -726,7 +832,7 @@ const saveUnSaveSearchOfUser = async (req, res) => {
             await Users.findByIdAndUpdate(userId , {$pull : {savedSearches : savedSearch }}, {new : true});
             return res.status(201).json({
                 success: true,
-                message : "Sorry Could Not Save search "
+                message : "Saved Search Removed successFully"
             })
         }
 
@@ -1067,4 +1173,8 @@ module.exports = {
     getAllSoldPropertiesofUser,
     deletePropertyofUser,
     getAllFilteredProperties,
+    getSinglePropertyData,
+    updateSingleImageProperty,
+    deleteSingleImageProperty,
+    addNewImageProperty,
 }

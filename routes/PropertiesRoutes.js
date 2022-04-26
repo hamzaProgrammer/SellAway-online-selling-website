@@ -21,6 +21,10 @@ const {
     getAllSoldPropertiesofUser,
     deletePropertyofUser,
     getAllFilteredProperties,
+    getSinglePropertyData,
+    updateSingleImageProperty,
+    deleteSingleImageProperty,
+    addNewImageProperty,
 } = require('../controllers/PropertiesController')
 const multer = require("multer")
 var storage = multer.diskStorage({
@@ -41,7 +45,16 @@ const upload = multer({
 router.post('/api/properties/addNew',  addNewProperty)
 
 // check Type of images
-router.put('/api/properties/UploadImages/:id', upload.array('propertyImage', 12) , uploadPropertyImages)
+router.post('/api/properties/UploadImages/:id', upload.array('propertyImage') , uploadPropertyImages)
+
+// updating single image of property
+router.post('/api/properties/UploadSingleImage/:id/:index', upload.single('propertySingleImage') , updateSingleImageProperty)
+
+// add new image to property
+router.post('/api/properties/addNewImage/:id/:owner', upload.single('addPropertyImage') , addNewImageProperty)
+
+// delete single image of property
+router.post('/api/properties/deleteSingleImage/:id/:index' , deleteSingleImageProperty)
 
 // update info of ad
 router.put('/api/properties/updateAdInfo/:id/:owner' , updatePropertyInfo)
@@ -51,6 +64,9 @@ router.get('/api/properties/getSinglePropertyImages/:id' , getSinglePropertyImag
 
 // getting details of a property
 router.get('/api/properties/getSinglePropertyDetails/:id' , getSinglePropertyDetails)
+
+// getting data of a single property
+router.get('/api/properties/getSinglePropertyData/:id' , getSinglePropertyData)
 
 // getting description of a property
 router.get('/api/properties/getSinglePropertyDes/:id' , getSinglePropertyDesc)

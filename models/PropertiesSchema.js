@@ -53,7 +53,7 @@ const PropertiesSchema = new mongoose.Schema({
     images: [{
         type: String,
     }],
-    extraFeatures: [{
+    features: [{
         type: String,
     }],
     status: {
