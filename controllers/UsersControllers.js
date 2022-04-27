@@ -291,7 +291,7 @@ const updateProfileOfUser = async (req, res) => {
                 });
             }
             if(req.body.email){
-                const checkUser = await Users.findOne({email : req.body.email });
+                const checkUser = await Users.findOne({email : req.body.email});
                 if(checkUser) {
                     return res.json({
                         success: false,
@@ -302,15 +302,6 @@ const updateProfileOfUser = async (req, res) => {
 
             if(req.body.password){
                 req.body.password = await bcrypt.hash(req.body.password, 10); // hashing password
-            }
-            if(req.body.email){
-                isExist.email = req.body.email
-            }
-            if(req.body.address){
-                isExist.address = req.body.address
-            }
-            if(req.body.phoneNo){
-                isExist.phoneNo = req.body.phoneNo
             }
 
             await Users.findByIdAndUpdate(id , {$set : {...req.body}} , {new : true})

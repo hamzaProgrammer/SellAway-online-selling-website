@@ -759,6 +759,7 @@ const getAllSavedPropertiesOfUser = async (req, res) => {
 // saving /unsaving property of a user
 const saveUnSavePropertiesOfUser = async (req, res) => {
     const {userId , propId} = req.params;
+    console.log(userId , propId)
 
     if(!userId || !propId){
         return res.status(404).json({
@@ -785,7 +786,8 @@ const saveUnSavePropertiesOfUser = async (req, res) => {
 
         const isPropExist = await Users.findOne({_id : userId, savedProperties : {$elemMatch : {$eq : propId}} });
         if(isPropExist){
-            await Users.findByIdAndUpdate(userId , {$pull : {savedProperties : propId }}, {new : true});
+            console.log("matched : ",propId)
+            await Users.findByIdAndUpdate(userId , {$pull : {savedProperties :  propId}}, {new : true});
             return res.status(201).json({
                 success: true,
                 message : "Property Removed from Saved Later"
@@ -978,6 +980,7 @@ const getAllSoldPropertiesofUser = async (req, res) => {
             {
                 $match : {
                     _id : mongoose.Types.ObjectId(userId),
+                    status : "sold"
                 },
             },
             {
@@ -1059,11 +1062,11 @@ const deletePropertyofUser = async (req, res) => {
 
         // removing from user account if deleted successfully
         if(isDelete){
-            const isSold = await Users.findOne({_id : userId , soldProperties : {$elemMatch : {$eq : id}} })
+            const isSold = await Users.findOne({_id : userId , soldProperties : {$elemMatch : {$eq : propId}} })
             if(isSold){
-                await Users.findByIdAndUpdate(userId , {$pull : {soldProperties : id }} , {new : true})
+                await Users.findByIdAndUpdate(userId , {$pull : {soldProperties : propId }} , {new : true})
             }else{
-                await Users.findByIdAndUpdate(userId , {$pull : {listedProperties : id }} , {new : true})
+                await Users.findByIdAndUpdate(userId , {$pull : {listedProperties : propId }} , {new : true})
             }
         }
 
