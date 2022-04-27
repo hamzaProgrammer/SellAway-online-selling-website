@@ -44,3 +44,10 @@
         font-size : 12px
     }
 }
+
+
+@media screen and (max-width : 375px){
+    .featureHead{
+        font-size : 10px
+    }
+}

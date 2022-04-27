@@ -44,6 +44,9 @@ const UpperNavbar = () => {
     }, [location])
 
     const showModal = () => {
+        setisSuccess(false)
+        setisError(false);
+        setisMsg("");
         setIsModalVisible(true);
         setisSignModalVisible(false)
     };
@@ -54,6 +57,9 @@ const UpperNavbar = () => {
         setIsModalVisible(false);
     };
     const showModalSignIn = () => {
+        setisSuccess(false)
+        setisError(false);
+        setisMsg("");
         setIsModalVisible(false);
         setisSignModalVisible(true)
     };
@@ -92,9 +98,6 @@ const UpperNavbar = () => {
                 setisMsg(data?.message)
             }
         }
-        setisSuccess(false)
-        setisError(false);
-        setisMsg("");
     }
 
     // sign In Now
@@ -107,19 +110,17 @@ const UpperNavbar = () => {
             setisMsg("Please Fill All Required Fields");
         }else{
             const {data} = await signInUser(signInData);
+            console.log("res : ", data);
             if(data?.success === true){
-                setisSuccess(true);
                 setisMsg(data?.message)
+                setisSuccess(true);
                 localStorage.setItem("profile", JSON.stringify(data));
                 setTimeout(window.location.reload(), 2000);
             }else{
-                setisError(true);
                 setisMsg(data?.message)
+                setisError(true);
             }
         }
-        setisSuccess(false)
-        setisError(false);
-        setisMsg("");
     }
 
     // logging out
@@ -203,7 +204,7 @@ const UpperNavbar = () => {
                 <div className="signIn" >
                     <Typography className="signInText" style={{fontSize : '20px' , color : '#c44569' ,  marginBottom : '20px' , textAlign : 'center'}} >Sign Up Now</Typography>
                     {
-                        isError && (
+                        isError === true && (
                             <Alert
                                 message={isMsg}
                                 type="error"
@@ -212,7 +213,7 @@ const UpperNavbar = () => {
                         )
                     }
                     {
-                        isSuccess && (
+                        isSuccess === true && (
                             <Alert
                                 message={isMsg}
                                 type="success"
@@ -235,7 +236,7 @@ const UpperNavbar = () => {
                 <div className="signIn" >
                     <Typography className="signInText" style={{fontSize : '20px' , color : '#c44569' ,  marginBottom : '20px' , textAlign : 'center'}} >Sign In Now</Typography>
                     {
-                        isError && (
+                        isError === true && (
                             <Alert
                                 message={isMsg}
                                 type="error"
@@ -244,7 +245,7 @@ const UpperNavbar = () => {
                         )
                     }
                     {
-                        isSuccess && (
+                        isSuccess === true && (
                             <Alert
                                 message={isMsg}
                                 type="success"

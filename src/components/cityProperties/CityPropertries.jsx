@@ -3,7 +3,7 @@ import { Typography , Row , Col , Divider , Radio , Input  ,  Tag , Button,  Sel
 import './CityProperty.css'
 import {DollarCircleOutlined , MenuOutlined } from '@ant-design/icons'
 import {getFilteredProperties , saveOrUnsaveProperties , saveMySearch} from '../../server_api/Api'
-import {useLocation, useNavigate} from 'react-router-dom'
+import {useLocation, useNavigate ,Link} from 'react-router-dom'
 import axios from 'axios'
 
 
@@ -60,10 +60,12 @@ const CityPropertries = () => {
         const getData = async () => {
             setLoading(true)
             setIsSaved(false);
+            console.log("in first useEffect")
             const {data} = await getFilteredProperties(search);
             setNewUrl("http://localhost:3000/allProperties" + `${search}`)
             setAllProperties(data?.AllProperties);
             setLoading(false)
+
         }
         getData();
     },[search])
@@ -71,51 +73,56 @@ const CityPropertries = () => {
     // gettting results on applying filter
     useEffect(() => {
         setIsSaved(false);
-        let filters = {};
-        if(sortBy !== ""){
-            console.log(" inner : ", sortBy)
-            filters = {...filters , sortBy : sortBy }
-        }
-        if(bedrooms !== 0){
-            filters = {...filters , bedrooms : bedrooms }
-        }
-        if(area !== 0){
-            filters = {...filters , area : area }
-        }
-        if(balcony !== ""){
-            filters = {...filters , balcony : balcony }
-        }
-        if(tvLaunch !== ""){
-            filters = {...filters , tvLaunch : tvLaunch }
-        }
-        if(kitchen !== 0){
-            filters = {...filters , kitchen : kitchen }
-        }
-        if(minPrice !== 0){
-            filters = {...filters , minPrice : minPrice }
-        }
-        if(maxPrice !== 0){
-            filters = {...filters , maxPrice : maxPrice }
-        }
+        if(bedrooms === 0 && area === 0 && balcony === '' && tvLaunch === '' && kitchen === 0 && minPrice === 0 && maxPrice ===  0  && sortBy === '' ){
+            console.log("not matched")
+        }else{
+            console.log("in second useEffect")
+            let filters = {};
+            if(sortBy !== ""){
+                console.log(" inner : ", sortBy)
+                filters = {...filters , sortBy : sortBy }
+            }
+            if(bedrooms !== 0){
+                filters = {...filters , bedrooms : bedrooms }
+            }
+            if(area !== 0){
+                filters = {...filters , area : area }
+            }
+            if(balcony !== ""){
+                filters = {...filters , balcony : balcony }
+            }
+            if(tvLaunch !== ""){
+                filters = {...filters , tvLaunch : tvLaunch }
+            }
+            if(kitchen !== 0){
+                filters = {...filters , kitchen : kitchen }
+            }
+            if(minPrice !== 0){
+                filters = {...filters , minPrice : minPrice }
+            }
+            if(maxPrice !== 0){
+                filters = {...filters , maxPrice : maxPrice }
+            }
 
-        let sendUrl = `http://localhost:3000/allProperties?city=${city}&activeStatus=${activeStatus}&`
-        let url = `http://localhost:8080/api/properties/getFilteredProperties?city=${city}&activeStatus=${activeStatus}&`;
-        for (const [key, value] of Object.entries(filters)) {
-            url = url + `${key}=${value}&`;
-            sendUrl = sendUrl + `${key}=${value}&`
-        }
-        setNewUrl(sendUrl)
+            let sendUrl = `http://localhost:3000/allProperties?city=${city}&activeStatus=${activeStatus}&`
+            let url = `http://localhost:8080/api/properties/getFilteredProperties?city=${city}&activeStatus=${activeStatus}&`;
+            for (const [key, value] of Object.entries(filters)) {
+                url = url + `${key}=${value}&`;
+                sendUrl = sendUrl + `${key}=${value}&`
+            }
+            setNewUrl(sendUrl)
 
-        axios.get(url)
-        .then(function (response) {
-            // handle success
-            setAllProperties(response?.data?.AllProperties)
-            console.log(response);
-        })
-        .catch(function (error) {
-            // handle error
-            console.log(error);
-        })
+            axios.get(url)
+            .then(function (response) {
+                // handle success
+                setAllProperties(response?.data?.AllProperties)
+                console.log(response);
+            })
+            .catch(function (error) {
+                // handle error
+                console.log(error);
+            })
+        }
     },[bedrooms,area,balcony, kitchen, maxPrice, minPrice, tvLaunch , sortBy ])
 
 
@@ -131,7 +138,7 @@ const CityPropertries = () => {
 
         const getData = async () => {
             setLoading(true)
-            const {data} = await getFilteredProperties(city,activeStatus);
+            const {data} = await getFilteredProperties(search);
             setAllProperties(data?.AllProperties);
             setLoading(false)
         }
@@ -151,10 +158,6 @@ const CityPropertries = () => {
     const [ layOutDir , seLayOutDir ] = useState("one")
 
 
-    const success = () => {
-        message.success(msg);
-    };
-
     const error = () => {
         message.error(msg);
     };
@@ -171,15 +174,28 @@ const CityPropertries = () => {
         message.success("Search Saved SuccessFully");
     };
 
-    const SaveOrUnSave = async (userId , propId) => {
-        const {data} = await saveOrUnsaveProperties(userId , propId)
-        console.log("saved : ", data);
-        if(data?.success === true){
-            setMsg(data?.message);
-            success();
+    const mySuccessOne = () => {
+        message.success("Ad Saved for Later SuccessFully");
+    };
+    const mySuccessTwo = () => {
+        message.success("Ad Removed from Saved Later SuccessFully");
+    };
+
+    const SaveOrUnSave = async (propId) => {
+        if(isAdmin === true ){
+            const {data} = await saveOrUnsaveProperties(isUser , propId)
+            if(data?.success === true){
+                if(data?.message === "Property Removed from Saved Later"){
+                    mySuccessTwo()
+                }else{
+                    mySuccessOne();
+                }
+            }else{
+                setMsg(data?.message);
+                error();
+            }
         }else{
-            setMsg(data?.message);
-            error();
+            errorSignIn();
         }
 
     }
@@ -264,8 +280,8 @@ const CityPropertries = () => {
                             <div className="rightFilter" >
                                 <MenuOutlined onClick={showDrawer} className="menuIcon" style={{fontSize : '25px'}}  />
                                 <Tag color="#34ace0" style={{fontSize : '15px' , fontWeight : 600}} >{allProperties.length} ads</Tag>
-                                <Button  style={{backgroundColor : '#cf6a87' , color : '#FFFFFF', border: 'none' , borderRadius : '10px',  fontWeight : 600}} onClick={saveSearch} disabled={isSaved} >Save Search</Button>
-                                <div style={{display : 'flex' , justifyContent : 'space-between', width : '350px'}} >
+                                <Button className="saveFilter" onClick={saveSearch} disabled={isSaved} >Save Search</Button>
+                                <div style={{display : 'flex' , justifyContent : 'flex-end', width : '350px'}} >
                                     <div style={{display : 'flex', justifyContent : 'space-between' , alignItems : 'center' , width : '150px'}} >
                                     <Typography style={{fontSize : '17px' , fontWeight : 600 , color : '#2f3640'}} >VIEW: </Typography>
                                         <img alt="menu icon" className="hideIcon" src="https://www.olx.com.pk/assets/iconList_noinline.fc368d8e5a57a18cef128d2179dc9b51.svg" style={{maxWidth : '30px' , maxHeight :'30px' , cursor : 'pointer'}} onClick={() => seLayOutDir("one")} />
@@ -295,7 +311,9 @@ const CityPropertries = () => {
                                                         allProperties?.map((item) => (
                                                             <Row style={{marginTop : '10px'}} >
                                                                 <Col xs={7} sm={7} md={7} lg={7} xl={7} >
-                                                                    <img alt="product img" style={{maxWidth : '100%' , width : '100%' , height : '150px' , maxHeight : '150px' , objectFit : 'cover' , borderTopLeftRadius : '5px' , borderBottomLeftRadius : '5px'}} src={item?.images[0]} />
+                                                                    <Link to={`/singleProperty/${item?._id}`}>
+                                                                        <img alt="product img" style={{maxWidth : '100%' , width : '100%' , height : '150px' , maxHeight : '150px' , objectFit : 'cover' , borderTopLeftRadius : '5px' , borderBottomLeftRadius : '5px'}} src={item?.images[0]} />
+                                                                    </Link>
                                                                 </Col>
                                                                 <Col xs={17} sm={17} md={17} lg={17} xl={17} style={{border : '1px solid #bdc3c7' , borderTopRightRadius : '5px', borderBottomRightRadius : '5px' , borderLeft : '1px solid transparent' }} >
                                                                     <Row style={{marginTop : '5px' }} >
@@ -307,7 +325,7 @@ const CityPropertries = () => {
                                                                             </div>
                                                                         </Col>
                                                                         <Col xs={2} sm={2} md={2} lg={2} xl={2}>
-                                                                            <img style={{ maxWidth : '30px' , maxHeight : '30px' , marginLeft : '10px' , cursor : 'pointer' }} alt="Save icon" onClick={() => SaveOrUnSave(item?.owner,item?._id )} src="https://img.icons8.com/external-bearicons-detailed-outline-bearicons/64/000000/external-Save-social-media-bearicons-detailed-outline-bearicons.png"/>
+                                                                            <img className="saveIcon" alt="Save icon" onClick={() => SaveOrUnSave(item?._id )} src="https://img.icons8.com/external-bearicons-detailed-outline-bearicons/64/000000/external-Save-social-media-bearicons-detailed-outline-bearicons.png"/>
                                                                         </Col>
                                                                     </Row>
                                                                 </Col>
@@ -327,7 +345,9 @@ const CityPropertries = () => {
                                                             allProperties?.map((item) => (
                                                                 <Col xs={24} sm={12} md={8} lg={8} xl={8} >
                                                                     <div className="secItemDiv" >
+                                                                    <Link to={`/singleProperty/${item?._id}`}>
                                                                         <img alt="product img" style={{maxWidth : '100%' , width : '100%' , minWidth : '100%' ,  height : '150px' , maxHeight : '150px' , objectFit : 'cover', padding : 0 }} src={item?.images[0]} />
+                                                                    </Link>
                                                                         <Row style={{marginTop : '5px', minWidth : '100%', maxHeight : '155px' }} >
                                                                                 <Col xs={21} sm={21} md={21} lg={21} xl={21}>
                                                                                     <div style={{display : 'flex' , flexDirection : 'column' , paddingLeft: '7px'}} >
@@ -337,7 +357,7 @@ const CityPropertries = () => {
                                                                                     </div>
                                                                                 </Col>
                                                                                 <Col xs={3} sm={3} md={3} lg={3} xl={3}>
-                                                                                    <img style={{ maxWidth : '20px' , maxHeight : '20px' , marginLeft : '10px' , cursor : 'pointer' }} alt="Save icon" onClick={() => SaveOrUnSave(item?.owner,item?._id )} src="https://img.icons8.com/external-bearicons-detailed-outline-bearicons/64/000000/external-Save-social-media-bearicons-detailed-outline-bearicons.png"/>
+                                                                                    <img className="saveIcon" alt="Save icon" onClick={() => SaveOrUnSave(item?._id )} src="https://img.icons8.com/external-bearicons-detailed-outline-bearicons/64/000000/external-Save-social-media-bearicons-detailed-outline-bearicons.png"/>
                                                                                 </Col>
                                                                         </Row>
                                                                     </div>
@@ -358,7 +378,9 @@ const CityPropertries = () => {
                                                             allProperties?.map((item) => (
                                                                 <Col xs={24} sm={24} md={24} lg={24} xl={24} style={{marginTop : '20px'}} >
                                                                     <div className="secItemDiv" >
+                                                                    <Link to={`/singleProperty/${item?._id}`}>
                                                                         <img alt="product img" style={{maxWidth : '100%' , width : '100%' , minWidth : '100%' ,  height : '200px' , maxHeight : '200px' , objectFit : 'cover', padding : 0 }} src={item?.images[0]} />
+                                                                    </Link>
                                                                         <Row style={{marginTop : '5px', minWidth : '100%' }} >
                                                                                 <Col xs={22} sm={22} md={22} lg={22} xl={22}>
                                                                                     <div style={{display : 'flex' , flexDirection : 'column' , paddingLeft: '7px'}} >
@@ -368,7 +390,7 @@ const CityPropertries = () => {
                                                                                     </div>
                                                                                 </Col>
                                                                                 <Col xs={2} sm={2} md={2} lg={2} xl={2}>
-                                                                                    <img style={{ maxWidth : '30px' , maxHeight : '30px' , marginLeft : '10px' , cursor : 'pointer' }} alt="Save icon" onClick={() => SaveOrUnSave(item?.owner,item?._id )} src="https://img.icons8.com/external-bearicons-detailed-outline-bearicons/64/000000/external-Save-social-media-bearicons-detailed-outline-bearicons.png"/>
+                                                                                    <img className="saveIcon" alt="Save icon" onClick={() => SaveOrUnSave(item?._id )} src="https://img.icons8.com/external-bearicons-detailed-outline-bearicons/64/000000/external-Save-social-media-bearicons-detailed-outline-bearicons.png"/>
                                                                                 </Col>
                                                                         </Row>
                                                                     </div>
@@ -441,6 +463,7 @@ const CityPropertries = () => {
                             <Option value="older">Older</Option>
                         </Select>
                     </Panel>
+                    <Button className="saveFilter hideFilter" style={{marginLeft : '30px' , borderRadius : '0px' , width : '150px', marginTop : '10px'}} onClick={saveSearch} disabled={isSaved} >Save Search</Button>
                     <Button style={{backgroundColor : '#e67e22' , color : '#FFFFFF' , fontWeight : 600 , marginTop : '20px' , marginLeft : '30px' , width : '150px'}} onClick={filterRemove} >Remove Filters</Button>
                 </Collapse>
             </Drawer>

@@ -99,6 +99,25 @@
     margin-left : 30px
 }
 
+.saveFilter{
+    background-color : #cf6a87;
+    color : #FFFFFF;
+    border: none;
+    border-radius : 10px;
+    font-weight : 600
+}
+
+.hideFilter{
+    display : none;
+}
+
+.saveIcon{
+    width : 20px;
+    height : 20px;
+    margin-left : 10px;
+    cursor : pointer
+}
+
 @media screen and (max-width: 768px) {
     .menuIcon{
         display : block;
@@ -115,17 +134,29 @@
     .sortHide{
         display : block
     }
+    .rightFilter{
+        margin-left : -20px;
+    }
 }
 
 @media screen and (max-width: 425px) {
     .secLayOut{
         margin-left : 0px;
     }
+    .saveIcon{
+        margin-left : -7px
+    }
 }
 
 @media screen and (max-width: 375px) {
     .hideIcon{
         display : none;
+    }
+    .saveFilter{
+        display : none;
+    }
+    .hideFilter{
+        display : block
     }
 }
 

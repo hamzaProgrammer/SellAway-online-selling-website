@@ -2,10 +2,34 @@ import React , {useState , useEffect} from 'react'
 import {Typography , Button , Drawer , notification } from 'antd'
 import './SideBar.css'
 import {useNavigate } from 'react-router-dom'
+import {getUserInfo} from '../../../server_api/Api'
 
-const EditProfilesideBar = () => {
+const EditProfilesideBar = ({isImgRender, setisImgRender}) => {
     const [ userInfo , setuserInfo ] = useState({});
     const  location = useNavigate();
+    const [ isToRender , setIsToRender ] = useState(isImgRender)
+    console.log("isImgRender in sde bar : ",isImgRender)
+    useEffect(() => {
+        if(isImgRender === true){
+            console.log("isImgRender : ",isImgRender)
+            const checkAdmin = async () => {
+                const user = JSON.parse(localStorage.getItem('profile'))
+                if (user) {
+                    console.log("user got", user.User._id)
+                    setAdminLogin(true)
+                    setIsAdmin(user?.User);
+                    const {data} = await getUserInfo(user.User._id);
+                    if(data?.success === true){
+                        setuserInfo(data?.User);
+                    }
+                } else {
+                    setAdminLogin(false)
+                }
+                setisImgRender(false)
+            }
+            checkAdmin();
+        }
+    },[isImgRender])
 
     const [visible, setVisible] = useState(false);
     const showDrawer = () => {
@@ -19,12 +43,15 @@ const EditProfilesideBar = () => {
 
     //checking if admin logged in or not
     useEffect(() => {
-      const checkAdmin = () => {
+      const checkAdmin = async () => {
         const user = JSON.parse(localStorage.getItem('profile'))
         if (user) {
           setAdminLogin(true)
           setIsAdmin(user?.User);
-          setuserInfo(user?.User);
+          const {data} = await getUserInfo(user.User._id);
+            if(data?.success === true){
+                setuserInfo(data?.User);
+            }
         } else {
           setAdminLogin(false)
         }
@@ -83,7 +110,7 @@ const EditProfilesideBar = () => {
     };
 
     return (
-        <>
+        <>{console.log("userInfo : ",userInfo)}
             <div className="editProfileMainDiv" >
                 {
                     userInfo?.profilePic !== "" ? (

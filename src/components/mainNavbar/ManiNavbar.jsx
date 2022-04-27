@@ -11,31 +11,6 @@ const ManiNavbar = () => {
     const navigate = useNavigate();
     const [ searchType , setTypeOfSearch ] = useState("")
     const [ searchCity , setsearchCity ] = useState("")
-    const notificationMenu = (
-        <Menu>
-            <Menu.Item key="0">
-            <a href="https://www.antgroup.com">1st menu item</a>
-            </Menu.Item>
-            <Menu.Item key="1">
-            <a href="https://www.aliyun.com">2nd menu item</a>
-            </Menu.Item>
-            <Menu.Divider />
-            <Menu.Item key="3">3rd menu item</Menu.Item>
-        </Menu>
-    );
-
-    const profileMenu = (
-        <Menu>
-            <Menu.Item key="0">
-            <a href="https://www.antgroup.com">Profile</a>
-            </Menu.Item>
-            <Menu.Item key="1">
-            <a href="https://www.aliyun.com">Chats</a>
-            </Menu.Item>
-            <Menu.Divider />
-            <Menu.Item key="3">3rd menu item</Menu.Item>
-        </Menu>
-    );
 
     const [visible, setVisible] = useState(false);
 
@@ -157,10 +132,6 @@ const ManiNavbar = () => {
                 </Col>
                 <Col xs={2} sm={2} md={2} lg={2} xl={2}>
                     <div className="thirdSecOfMainNav" >
-                        {/* <img alt="message Icon" className="mainNavbarImg" src="/icons/chatIcon.png" />
-                        <Dropdown overlay={notificationMenu} trigger={['click']}>
-                            <img alt="notification icon" style={{maxWidth : '30px' , maxHeight : '30px' , cursor : 'pointer'}} src="/icons/notificationIcon.png"/>
-                        </Dropdown> */}
                         {
                             isUser && (
                                 user?.profilePic !== undefined ? (
@@ -178,14 +149,16 @@ const ManiNavbar = () => {
 
             <Drawer width={250} closable={false}  placement="right" color="primary" bodyStyle={{ backgroundColor: "#3B4144", padding: "0" , width : "100%"}}  onClose={onClose} visible={visible}>
                 <div className="mainNavHide" >
-                    <Button className="drawerBtn" icon={<MessageOutlined />} >My Chats</Button>
-                    <Dropdown overlay={notificationMenu} trigger={['click']}>
-                        <Button className="drawerBtn" icon={<NotificationOutlined />} >Notifications</Button>
-                    </Dropdown>
-                    <Dropdown overlay={profileMenu} trigger={['click']}>
-                        <Button className="drawerBtn" icon={ <Avatar style={{backgroundColor : '#EAB543' , cursor : 'pointer' , marginRight : '20px'}} >H</Avatar>} >Profile</Button>
-                    </Dropdown>
-                    <Button className="drawerBtn" icon={<LogoutOutlined style={{fontSize : '18px' , fontWeight : 600}} />} >Advertise</Button>;
+                    {
+                            isUser && (
+                                user?.profilePic !== undefined ? (
+                                    <img alt="user Imag" style={{maxWidth : '70px' , maxHeight : '70px' , marginLeft : '80px' , marginBottom : '20px', cursor : 'pointer'}} src={user?.profilePic} onClick={myProfile} />
+                                ) : (
+                                    <img alt="user Imag" style={{maxWidth : '70px' , maxHeight : '70px' , marginLeft : '80px' , marginBottom : '20px', cursor : 'pointer'}} src="https://img.icons8.com/color/48/000000/user.png" onClick={myProfile} />
+                                )
+                        )
+                        }
+                        <Button  style={{fontSize : '17px' , marginTop  : '-5px' , height : '40px', minHeight : 'auto' , minWidth : 'auto' ,  borderRadius : '20px', backgroundColor : '#ff6b81' , color : '#FFFFFF'  , fontWeight : 600 , boxShadow: 'rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px' , border: '1px solid transparent'}} onClick={advertise} >Advertise</Button>
                 </div>
             </Drawer>
         </>

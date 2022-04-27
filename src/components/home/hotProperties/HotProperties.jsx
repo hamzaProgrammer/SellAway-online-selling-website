@@ -1,6 +1,6 @@
 import React , {useState , useEffect } from 'react'
 import '../moreOnSearch/MoreOnRecentSearch.css'
-import { Typography , Row , Card , Col, Button , Spin , message } from 'antd';
+import { Typography , Row , Card , Col , Spin , message } from 'antd';
 import {getHotProperties , saveOrUnsaveProperties} from '../../../server_api/Api'
 import {useNavigate , Link} from 'react-router-dom'
 import moment from 'moment'
@@ -21,26 +21,56 @@ const HotProperties = () => {
         getData();
     },[location])
 
-    const success = () => {
-        message.success(msg);
+    const mySuccessOne = () => {
+        message.success("Ad Saved for Later SuccessFully");
+    };
+    const mySuccessTwo = () => {
+        message.success("Ad Removed from Saved Later SuccessFully");
     };
 
     const error = () => {
         message.error(msg);
     };
 
-    const SaveOrUnSave = async (userId , propId) => {
-        const {data} = await saveOrUnsaveProperties(userId , propId)
-        console.log("saved : ", data);
-        if(data?.success === true){
-            setMsg(data?.message);
-            success();
+    const errorSignIn = () => {
+        message.error("Please Sign In First");
+    };
+
+    const SaveOrUnSave = async (propId) => {
+        if(isAdmin === true ){
+            const {data} = await saveOrUnsaveProperties(isUser , propId)
+            if(data?.success === true){
+                if(data?.message === "Property Removed from Saved Later"){
+                    mySuccessTwo()
+                }else{
+                    mySuccessOne();
+                }
+            }else{
+                setMsg(data?.message);
+                error();
+            }
         }else{
-            setMsg(data?.message);
-            error();
+            errorSignIn();
         }
 
     }
+
+    const [isAdmin, setAdminLogin] = useState(false)
+    const [isUser , setIsuser ] = useState("")
+
+    //checking if admin logged in or not
+    useEffect(() => {
+        const checkAdmin = () => {
+            const user = JSON.parse(localStorage.getItem('profile'))
+            if (user) {
+                setAdminLogin(true)
+                setIsuser(user?.User?._id)
+            } else {
+                setAdminLogin(false)
+            }
+        }
+        checkAdmin();
+    }, [location])
 
     return (
         <>
@@ -49,7 +79,7 @@ const HotProperties = () => {
                 <Row>
                     <Col xs={23} sm={23} md={23} lg={23} xl={23} >
                         <Spin spinning={loading}>
-                            <Row gutter={[0,16]} style={{marginLeft : '5%'}} >
+                            <Row gutter={[5,16]} style={{marginLeft : '5%'}} >
                                 {
                                     hotProperties?.length > 0 ? (
                                         hotProperties?.map((item) => (
@@ -63,14 +93,13 @@ const HotProperties = () => {
                                                         <div className="itemDesc" >
                                                                 <div style={{display : 'flex' , justifyContent : 'space-between' , alignItems : 'center' , padding : 0}} >
                                                                     <Row>
-                                                                            <Col xs={22} sm={22} md={22} lg={22} xl={22}>
-                                                                                <Link to={`/singleProperty/${item?._id}`}>
-                                                                                    <Typography className="itemName" style={{minWidth : '240px'}} >{item?.title}</Typography>
-                                                                                </Link>
-                                                                            </Col>
-                                                                        <Col xs={2} sm={2} md={2} lg={2} xl={2}  >
-                                                                            {console.log("item?.owner : ",item?.owner)}
-                                                                            <img style={{ maxWidth : '80%' , maxHeight : '80%' , marginLeft : '10px' }} alt="Save icon" onClick={() => SaveOrUnSave(item?.owner,item?._id )} src="https://img.icons8.com/external-bearicons-detailed-outline-bearicons/64/000000/external-Save-social-media-bearicons-detailed-outline-bearicons.png"/>
+                                                                        <Col xs={21} sm={21} md={21} lg={21} xl={21}>
+                                                                            <Link to={`/singleProperty/${item?._id}`}>
+                                                                                <Typography className="itemName" style={{width : '100%'}} >{item?.title}</Typography>
+                                                                            </Link>
+                                                                        </Col>
+                                                                        <Col xs={3} sm={3} md={3} lg={3} xl={3}  >
+                                                                            <img style={{ maxWidth : '80%' , maxHeight : '80%' , marginLeft : '10px' }} alt="Save icon" onClick={() => SaveOrUnSave(item?._id )} src="https://img.icons8.com/external-bearicons-detailed-outline-bearicons/64/000000/external-Save-social-media-bearicons-detailed-outline-bearicons.png"/>
                                                                         </Col>
                                                                     </Row>
                                                                 </div>
@@ -92,15 +121,6 @@ const HotProperties = () => {
                             </Row>
                         </Spin>
                     </Col>
-                </Row>
-                <Row>
-                    <Col xs={8} sm={8} lg={8} xl={8} ></Col>
-                    <Col xs={8} sm={8} lg={8} xl={8} >
-                        <div style={{display: 'flex' , justifyContent : 'center', alignItems : 'center'}} >
-                            <Button className="loadMoreBtn" >Load More</Button>
-                        </div>
-                    </Col>
-                    <Col xs={8} sm={8} lg={8} xl={8} ></Col>
                 </Row>
             </div>
         </>

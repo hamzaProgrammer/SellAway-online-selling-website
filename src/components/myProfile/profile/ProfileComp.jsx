@@ -9,15 +9,22 @@ const init = {
     password : '',
     address : '',
     phoneNo : '',
+    name : ''
 }
 
-const EditPortion = () => {
+const EditPortion = ({setIsRender ,setisImgRender}) => {
     const [ userInfo , setuserInfo ] = useState({});
     const [ userSendInfo , setSendInfo ] = useState(init);
     const {id} = useParams();
     const [isError, setIsError] = useState(false)
     const [isSuccess, setIsSuccess ] = useState(false)
     const [msg, setMsg ] = useState(false)
+    const [previewVisible , setpreviewVisible] = useState(false)
+    const [previewImage , setpreviewImage] = useState('')
+    const [ myFileOne , setMyFileone ] = useState([])
+    const  handleCancel = () => setpreviewVisible(false)
+
+
     useEffect(() => {
         const getData = async () => {
             const {data} = await getUserInfo(id);
@@ -43,6 +50,22 @@ const EditPortion = () => {
         });
     };
 
+    const openNotificationWithError = (type) => {
+        notification[type]({
+            message: 'UnSuccessFull',
+            description:'Sorry! Could Not Update Your Information.',
+            duration : 2000
+        });
+    };
+
+    const openNotificationWithErrorOne = (type) => {
+        notification[type]({
+            message: 'UnsuccessFull',
+            description:'You have Not Sent Any Data fro Updating',
+            duration : 2000
+        });
+    };
+
     const openNotificationWithImageNot = (type) => {
         notification[type]({
             message: 'UnSuccessFull',
@@ -57,34 +80,37 @@ const EditPortion = () => {
         setIsSuccess(false)
         setMsg("");
 
-        if(userSendInfo?.email === ""){
-            setSendInfo({...userSendInfo , email : userInfo?.email})
+        if(userSendInfo?.password === ""){
+            delete userSendInfo.password;
         }
-        if(userSendInfo?.phoneNo === ""){
-            setSendInfo({...userSendInfo , phoneNo : userInfo?.phoneNo})
+        if(userSendInfo?.name === ""){
+            delete userSendInfo.name;
+        }
+        if(userSendInfo?.email === ""){
+            delete userSendInfo.email;
         }
         if(userSendInfo?.address === ""){
-            setSendInfo({...userSendInfo , address : userInfo?.address})
+            delete userSendInfo.address;
         }
-        if(userSendInfo?.password === ""){
-            setSendInfo({...userSendInfo , password : userInfo?.password})
+        if(userSendInfo?.phoneNo === ""){
+            delete userSendInfo.phoneNo;
+        }
+        if(Object.keys(userSendInfo).length < 1){
+            setTimeout(openNotificationWithErrorOne('error'),2000);
+            return;
         }
 
         const {data} = await updateUserInfo(userInfo._id, userSendInfo );
-        console.log("got data : ", data)
 
         if(data?.success === true){
-            setIsSuccess(true)
             openNotificationWithIcon('success');
+            setTimeout(window.location.reload(),2000);
+            setIsRender(true)
         }else{
-            setIsError(true)
-            setMsg(data?.message)
+            openNotificationWithError('error')
         }
     }
-    const [previewVisible , setpreviewVisible] = useState(false)
-    const [previewImage , setpreviewImage] = useState('')
-    const [ myFileOne , setMyFileone ] = useState([])
-    const  handleCancel = () => setpreviewVisible(false)
+
     const handlePreview = (file) => {
         setpreviewImage(file.thumbUrl);
         setpreviewVisible(true)
@@ -104,6 +130,7 @@ const EditPortion = () => {
     
             if(data?.success === true){
                 openNotificationWithImage('success');
+                setisImgRender(true)
             }else{
                 openNotificationWithImageNot('error')
             }
@@ -113,7 +140,7 @@ const EditPortion = () => {
 
     const uploadButton = (
     <div>
-        <div className="ant-upload-text">Upload</div>
+        <div className="ant-upload-text">Update Photo</div>
     </div>
     );
     return (
@@ -132,6 +159,8 @@ const EditPortion = () => {
                 }
                 <Typography  className="labelNewAddProperty" style={{fontSize : '14px'}} > Email</Typography>
                 <Input value={userSendInfo?.email} name="email" onChange={(e) => setSendInfo({...userSendInfo , [e.target.name] : e.target.value}) } className="myInput" placeholder={userInfo?.email} type="email"  />
+                <Typography className="labelNewAddProperty" style={{fontSize : '14px'}} > Name</Typography>
+                <Input value={userSendInfo?.name} name="name" onChange={(e) => setSendInfo({...userSendInfo , [e.target.name] : e.target.value}) } className="myInput" placeholder={userInfo?.name} />
                 <Typography className="labelNewAddProperty" style={{fontSize : '14px'}} > Password</Typography>
                 <Input value={userSendInfo?.password} name="password" onChange={(e) => setSendInfo({...userSendInfo , [e.target.name] : e.target.value}) } className="myInput" placeholder="********" type="text" />
                 <Typography className="labelNewAddProperty" style={{fontSize : '14px'}} > Phone No</Typography>

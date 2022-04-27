@@ -56,7 +56,7 @@ const MyProfile = () => {
                                     </>
                                 ))
                             ) : (
-                                <Typography style={{fontSize : '22px' , fontWeight : 600 , textAlign : 'center' , marginTop : '50px' , color : '#c0392b' }} >No Saved Searches Available</Typography>
+                                <Typography style={{fontSize : '16px' , fontWeight : 600 , marginLeft : '50px' , marginTop : '70px' , color : '#c0392b' }} >No Saved Searches Available</Typography>
                             )
                         }
                     </Spin>

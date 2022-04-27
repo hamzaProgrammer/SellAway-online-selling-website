@@ -17,9 +17,6 @@ API.interceptors.request.use((req) => {
 // Users Routes
 const signInUser = (data) => API.post(`/api/users/signin`, data);
 const signUpUser = (data) => API.post(`/api/users/signup`, data);
-const sendMail = (email) => API.put(`/api/users/sendMail/${email}`);
-const checkOtp = (email , userEmail) => API.put(`/api/users/checkSentCode/${userEmail}` , email );
-const updatePassword = (email , userEmail) => API.put(`/api/users/updatePassword/${userEmail}` , email );
 const getUserInfo = (id) => API.get(`/api/users/getProfileInfo/${id}`);
 const updateProfilePic = (data , id) => API.put(`/api/users/uploadProfilePic/${id}`, data );
 const updateUserInfo = (id , data) => API.put(`/api/users/updateProfileInfo/${id}`, data );
@@ -35,7 +32,7 @@ const getPropertyRelated = (id) => API.get(`/api/properties/getSRelatedPropertie
 const getPropertyDet = (id) => API.get(`/api/properties/getSinglePropertyDetails/${id}`);
 const getPropertyFeatures = (id) => API.get(`/api/properties/getSinglePropertyFeatures/${id}`);
 const getPropertyOwner = (id) => API.get(`/api/properties/getOwnerDetails/${id}`);
-const getFilteredProperties = (search) => API.get(`/api/properties/getFilteredProperties?${search}`);
+const getFilteredProperties = (search) => API.get(`/api/properties/getFilteredProperties${search}`);
 const getUserAllProperties = (userId) => API.get(`/api/properties/getAllListedPropertiesOfUser/${userId}`);
 const getUserSoldProperties = (userId) => API.get(`/api/properties/getAllSoldPropertiesOfUser/${userId}`);
 const getUsersavedProperties = (userId) => API.get(`/api/properties/getAllSavedProperties/${userId}`);

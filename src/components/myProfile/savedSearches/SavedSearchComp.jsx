@@ -13,7 +13,6 @@ const InnerComp = ({item ,setIsRender}) => {
     const [ mySendArray , setMyArray ] = useState([]);
     const [ sendItem , setSendItem ] = useState({savedSearch : ''});
 
-    console.log("item : ",item)
     const openNotificationWithIcon = type => {
         notification[type]({
             message: 'Saved Search Removed SuccessFully',
@@ -50,11 +49,6 @@ const InnerComp = ({item ,setIsRender}) => {
         checkAdmin();
     }, [item])
 
-    const openNotificationWithIconOne = type => {
-        notification[type]({
-            message: 'Could Not Remove Saved Property',
-        });
-    };
 
     // Popconfirm
     function confirm() {

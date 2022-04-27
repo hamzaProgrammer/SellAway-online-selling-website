@@ -88,7 +88,7 @@
 }
 
 .loadMoreBtn:hover{
-     background-color : #FFFFFF;
+    background-color : #FFFFFF;
     color : #EAB543;
     border : 1px solid #2C3A47;
 }
@@ -96,6 +96,9 @@
 @media screen and (max-width: 1024px){
     .newItem{
         max-width : 230px;
+    }
+    .itemAddress{
+        font-size : 10px !important
     }
 }
 
@@ -105,6 +108,11 @@
     }
 }
 
+@media screen and (max-width: 576px){
+    .itemAddress{
+        font-size : 11px !important
+    }
+}
 
 @media screen and (max-width: 375px){
     .itemName{
@@ -114,7 +122,7 @@
         font-size : 15px;
     }
     .itemAddress{
-        font-size : 12px;
+        font-size : 13px !important
     }
 }
 
@@ -126,7 +134,7 @@
         font-size : 15px;
     }
     .itemAddress{
-        font-size : 10px;
+        font-size : 9px !important
     }
     .moreRecentRelatedHead{
         font-size : 18px

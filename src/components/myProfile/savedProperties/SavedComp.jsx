@@ -1,7 +1,7 @@
 import React , {useEffect , useState } from 'react'
 import {Row , Col , Button  ,Typography , Spin ,notification , Popconfirm  } from 'antd';
 import '../../cityProperties/CityProperty.css'
-import {useParams, Link} from 'react-router-dom';
+import {useParams, Link , useNavigate} from 'react-router-dom';
 import {getUsersavedProperties , saveOrUnsaveProperties} from '../../../server_api/Api'
 import {DeleteOutlined} from '@ant-design/icons'
 
@@ -35,20 +35,48 @@ const PropertyComp = () => {
         });
     };
 
+    const [isAdmin, setAdminLogin] = useState("")
+    const location = useNavigate();
 
-    function confirm(userId , propId) {
-        const SaveUnSave = async () => {
-            const {data} = await saveOrUnsaveProperties(userId , propId)
-            console.log("data ", data);
-            if(data?.success){
-                setIsRender(true)
-                openNotificationWithIcon('success')
-            }else{
-                openNotificationWithIconOne('error')
+    //checking if admin logged in or not
+    useEffect(() => {
+        const checkAdmin = () => {
+            const user = JSON.parse(localStorage.getItem('profile'))
+            if (user) {
+                setAdminLogin(user?.User?._id)
+            } else {
+                setAdminLogin("")
             }
         }
-        SaveUnSave();
+        checkAdmin();
+    }, [location])
+
+
+    const openNotificationWithSignIn= type => {
+        notification[type]({
+            message: 'Please Sign In to Continue',
+        });
+    };
+
+    const deletOne = async (id) => {
+        const {data} = await saveOrUnsaveProperties(isAdmin,id);
+        if(data?.success){
+            setIsRender(true)
+            openNotificationWithIcon('success')
+        }else{
+            openNotificationWithIconOne('error')
+        }
     }
+
+    function confirm(id) {
+        console.log("id : ", id)
+        if(isAdmin === ""){
+            openNotificationWithSignIn('error')
+        }else{
+            deletOne(id)
+        }
+    }
+
     function cancel(e) {
         console.log(e);
     }
@@ -82,7 +110,7 @@ const PropertyComp = () => {
                                                     <Col xs={3} sm={3} md={3} lg={3} xl={3}>
                                                         <Popconfirm
                                                                 title="Are you sure to delete this Ad?"
-                                                                onConfirm={() =>confirm(itemOne?.owner, itemOne?.PropertyId)}
+                                                                onConfirm={() =>confirm(itemOne?.PropertyId)}
                                                                 onCancel={cancel}
                                                                 okText="Yes"
                                                                 cancelText="No"
@@ -106,19 +134,6 @@ const PropertyComp = () => {
                 <Col xs={0} sm={0} md={0} lg={1} xl={1}></Col>
             </Row>
 
-            {
-                allProp?.length > 0 && (
-                    <Row>
-                        <Col xs={8} sm={8} lg={8} xl={8} ></Col>
-                        <Col xs={8} sm={8} lg={8} xl={8} >
-                            <div style={{display: 'flex' , justifyContent : 'center', alignItems : 'center'}} >
-                                <Button className="loadMoreBtn" >Load More</Button>
-                            </div>
-                        </Col>
-                        <Col xs={8} sm={8} lg={8} xl={8} ></Col>
-                    </Row>
-                )
-            }
         </>
     )
 }

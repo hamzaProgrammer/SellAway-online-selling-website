@@ -47,6 +47,16 @@ import AllSavedProperties from './pages/allSavedProperties/AllSavedProperties'
 // my all saved  search page
 import AllSavedSearches from './pages/savedSearches/SavedSearches'
 
+
+// show seller pofile
+import SellerProfile from './pages/userProfileView/UserProfile'
+
+// show seller all properties listed
+import SellerAllProp from './pages/allSellerProp/AllPropOfSeller'
+
+// show seller all sold properties
+import SellerAllSoldProp from './pages/allSellerSoldProp/AllSold'
+
 function App() {
     const [isAdmin, setAdminLogin] = useState(false)
     const location = useNavigate();
@@ -85,6 +95,12 @@ function App() {
               <Route exact path="/advertiseMyAdd/:id" element={<AddNewProperty/>} />
 
               <Route exact path="/editMyAdvertise/:id" element={<ViewAdd/>} />
+
+              <Route exact path="/viewUserProfile/:id" element={<SellerProfile/>} />
+
+              <Route exact path="/viewSellerAllProp/:id" element={<SellerAllProp/>} />
+
+              <Route exact path="/viewSellerAllSoldProp/:id" element={<SellerAllSoldProp/>} />
 
         </Routes>
     </>
